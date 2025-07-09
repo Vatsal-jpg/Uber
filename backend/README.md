@@ -481,7 +481,7 @@ Send a JSON object with the following structure:
   "password": "yourpassword",
   "vehicle": {
     "color": "blue",
-    "plate": "MH 47 K 3403",
+    "plate": "MH 48 V 7777",
     "capacity": 5,
     "vehicleType": "car"
   }
@@ -516,7 +516,7 @@ Send a JSON object with the following structure:
       "email": "captain@example.com",
       "vehicle": {
         "color": "blue",
-        "plate": "MH 47 K 3403",
+        "plate": "MH 48 V 7777",
         "capacity": 5,
         "vehicleType": "car"
       },
