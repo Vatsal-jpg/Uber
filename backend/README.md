@@ -456,3 +456,118 @@ This endpoint logs out the currently authenticated user by clearing the authenti
 ```bash
 curl -X GET http://localhost:4000/users/logout \
   -H "Authorization: Bearer
+```
+# Captain Registration Endpoint
+
+## Endpoint
+
+`POST /captains/register`
+
+## Description
+
+This endpoint allows a new captain to register by providing their email, full name, password, and vehicle details. On successful registration, a captain object is returned.
+
+## Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "email": "captain@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "password": "yourpassword",
+  "vehicle": {
+    "color": "blue",
+    "plate": "MH 47 K 3403",
+    "capacity": 5,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Field Requirements
+
+- `email` (string, required): Must be a valid email address.
+- `fullname.firstname` (string, required): At least 3 characters.
+- `fullname.lastname` (string, optional): At least 3 characters if provided.
+- `password` (string, required): At least 6 characters.
+- `vehicle.color` (string, required): Vehicle color.
+- `vehicle.plate` (string, required): Vehicle plate number.
+- `vehicle.capacity` (integer, required): At least 1.
+- `vehicle.vehicleType` (string, required): Must be one of `car`, `bike`, or `auto`.
+
+## Responses
+
+### Success
+
+- **Status:** `201 Created`
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "captain@example.com",
+      "vehicle": {
+        "color": "blue",
+        "plate": "MH 47 K 3403",
+        "capacity": 5,
+        "vehicleType": "car"
+      },
+      "status": "inactive"
+    }
+  }
+  ```
+
+### Validation Error
+
+- **Status:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid email",
+        "param": "email",
+        "location": "body"
+      }
+      // ...other errors
+    ]
+  }
+  ```
+
+### Missing Fields
+
+- **Status:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "All fields are required"
+      }
+    ]
+  }
+  ```
+
+## Example Request
+
+```bash
+curl -X POST http://localhost:4000/captains/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "captain@example.com",
+    "fullname": { "firstname": "John", "lastname": "Doe" },
+    "password": "yourpassword",
+    "vehicle": {
+      "color": "blue",
+      "plate": "MH 48 V 7777",
+      "capacity": 5,
+      "vehicleType":
+```
