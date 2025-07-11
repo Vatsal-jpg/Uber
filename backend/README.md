@@ -571,3 +571,239 @@ curl -X POST http://localhost:4000/captains/register \
       "capacity": 5,
       "vehicleType":
 ```
+# Captain Registration Endpoint
+
+## Endpoint
+
+`POST /captains/register`
+
+## Description
+
+Register a new captain by providing email, full name, password, and vehicle details. Returns a JWT token and the captain object on success.
+
+## Request Body
+
+```json
+{
+  "email": "captain@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "password": "yourpassword",
+  "vehicle": {
+    "color": "blue",
+    "plate": "MH 48 V 7777",
+    "capacity": 5,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Field Requirements
+
+- `email` (string, required): Valid email address.
+- `fullname.firstname` (string, required): At least 3 characters.
+- `fullname.lastname` (string, optional): At least 3 characters if provided.
+- `password` (string, required): At least 6 characters.
+- `vehicle.color` (string, required)
+- `vehicle.plate` (string, required)
+- `vehicle.capacity` (integer, required): At least 1.
+- `vehicle.vehicleType` (string, required): One of `car`, `bike`, `auto`.
+
+## Responses
+
+### Success
+
+- **Status:** `201 Created`
+- **Body:**
+  ```json
+  {
+    "token": "jwt_token_here",
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "captain@example.com",
+      "vehicle": {
+        "color": "blue",
+        "plate": "MH 48 V 7777",
+        "capacity": 5,
+        "vehicleType": "car"
+      },
+      "status": "inactive"
+    }
+  }
+  ```
+
+---
+
+# Captain Login Endpoint
+
+## Endpoint
+
+`POST /captains/login`
+
+## Description
+
+Login an existing captain using email and password. Returns a JWT token and the captain object on success.
+
+## Request Body
+
+```json
+{
+  "email": "captain@example.com",
+  "password": "yourpassword"
+}
+```
+
+### Field Requirements
+
+- `email` (string, required): Valid email address.
+- `password` (string, required): At least 6 characters.
+
+## Responses
+
+### Success
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "token": "jwt_token_here",
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "captain@example.com",
+      "vehicle": {
+        "color": "blue",
+        "plate": "MH 48 V 7777",
+        "capacity": 5,
+        "vehicleType": "car"
+      },
+      "status": "inactive"
+    }
+  }
+  ```
+
+### Validation Error
+
+- **Status:** `400 Bad Request`
+- **Body:**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid email",
+        "param": "email",
+        "location": "body"
+      }
+      // ...other errors
+    ]
+  }
+  ```
+
+### Invalid Credentials
+
+- **Status:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "Invalid email or password"
+  }
+  ```
+
+---
+
+# Get Captain Profile Endpoint
+
+## Endpoint
+
+`GET /captains/profile`
+
+## Description
+
+Returns the profile information of the currently authenticated captain. Requires a valid JWT token.
+
+## Authentication
+
+- Requires authentication via JWT token.
+
+## Responses
+
+### Success
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "John",
+        "lastname": "Doe"
+      },
+      "email": "captain@example.com",
+      "vehicle": {
+        "color": "blue",
+        "plate": "MH 48 V 7777",
+        "capacity": 5,
+        "vehicleType": "car"
+      },
+      "status": "inactive"
+    }
+  }
+  ```
+
+### Unauthorized
+
+- **Status:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "You are not logged in"
+  }
+  ```
+
+---
+
+# Captain Logout Endpoint
+
+## Endpoint
+
+`GET /captains/logout`
+
+## Description
+
+Logs out the currently authenticated captain by clearing the authentication cookie and blacklisting the token. Requires a valid JWT token.
+
+## Authentication
+
+- Requires authentication via JWT token.
+
+## Responses
+
+### Success
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "You have been logged out successfully"
+  }
+  ```
+
+### Unauthorized
+
+- **Status:** `401 Unauthorized`
+- **Body:**
+  ```json
+  {
+    "message": "You are not logged in"
+  }
+  
