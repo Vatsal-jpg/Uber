@@ -10,7 +10,7 @@ module.exports.authUser = async(req, res,next)=>{
         return res.status(401).json({message: 'Unauthorized'})
     }
     // Check if the token is blacklisted
-    const isBlacklisted = await blacklistTokenMode.findOne({token: token}); 
+    const isBlacklisted = await blacklistTokenModel.findOne({token: token}); 
     if(isBlacklisted){
         return res.status(401).json({message: 'Unauthorized'})
     }

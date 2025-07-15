@@ -1,7 +1,10 @@
 import React from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react'; 
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
+import axios from 'axios';
+// import  useContext from 'react';
+import { UserDataContext } from '../context/UserContext';
 
 const UserSignUp = () => {
    const[email, setEmail] = useState('');
@@ -11,9 +14,13 @@ const UserSignUp = () => {
     const[showPassword, setShowPassword] = useState(false);
     const[userdata,setUserdata] = useState([]);
   
-    const submitHandler = (e) => {
+    const navigate = useNavigate();
+
+    const {user,setUser} = React.useContext(UserDataContext);
+
+    const submitHandler = async (e) => {
       e.preventDefault(); 
-      const data = {
+      const newUser = {
         email: email,
         password: password,
         fullname:{
@@ -21,7 +28,14 @@ const UserSignUp = () => {
         lastname: lastname
         } 
       };
-      setUserdata(data); 
+      const res=await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser)
+
+      if(res.status === 201){
+        alert('User created successfully');
+        setUser(res.data.user);
+        localStorage.setItem('token', res.data.token);
+        navigate('/home');
+      }
 
       setEmail(''); 
       setPassword('');
@@ -72,7 +86,7 @@ const UserSignUp = () => {
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
         </div>
-        <button className='  py-4 px-15 w-full bg-black text-white font-semibold rounded-lg '>Sign Up</button>
+        <button className='  py-4 px-15 w-full bg-black text-white font-semibold rounded-lg '>Create Account</button>
       </form>
       <p className='text-center mt-4 '>Already have an account? <Link to="/user-login" className='text-blue-500'>Log in</Link></p>
     </div>

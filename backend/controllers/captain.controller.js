@@ -5,10 +5,15 @@ const blacklistTokenModel = require('../models/blacklistToken.model');
 // const captainModel = require('../models/captain.model');
 
 module.exports.registerCaptain = async (req, res, next) => {
+    
+
     const errors = validationResult(req);
+    console.log('Validation Errors:', validationResult(req).array());
+
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
+
     const { fullname, email, password, vehicle } = req.body;
     const captainExists = await captainModel.find({email});
     if (captainExists.length > 0) {
@@ -21,7 +26,7 @@ module.exports.registerCaptain = async (req, res, next) => {
             lastname: fullname.lastname,
             email,
             password,
-            colour: vehicle.color,
+            color: vehicle.color,
             plate: vehicle.plate,
             capacity: vehicle.capacity,
             vehicleType: vehicle.vehicleType
@@ -40,16 +45,13 @@ module.exports.loginCaptain = async (req, res, next) => {
     }
     const { email, password } = req.body;
     const captain = await captainModel.findOne({ email }).select('+password');
-    console.log("Email:", email);
-console.log("Entered Password:", password);
-console.log("Captain from DB:", captain);
-console.log("Hashed Password in DB:", captain?.password);
+
 
     if (!captain) {
         return res.status(401).json({ message: 'Invalid email or password' });
     }
     const isPasswordValid = await captain.comparePassword(password);
-    console.log("Password Match:", isPasswordValid);
+   
 
     if (!isPasswordValid) {
         return res.status(401).json({ message: 'Invalid email or password' });

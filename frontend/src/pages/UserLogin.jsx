@@ -1,7 +1,10 @@
 import React from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { data, Link } from 'react-router-dom';
+import { UserDataContext } from '../context/UserContext';
+import{useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 const Userlogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,17 +12,27 @@ const Userlogin = () => {
   const [password, setPassword] = useState('');
   const [userdata,setuserdata] = useState([]);
 
-  const submitHandler = (e) => {
+  const {user,setUser} = React.useContext(UserDataContext);
+  const navigate = useNavigate();
+
+  const submitHandler = async(e) => {
     e.preventDefault();
-    setuserdata({
+   const userdata={
       email: email,
       password: password
-    });
-    console.log(userdata);
+   }
+   const res= await axios.post(`${import.meta.env.VITE_BASE_URL}/users/login`,userdata)
+    if(res.status === 200){
+      alert('User logged in successfully');
+      setUser(res.data.user);
+      localStorage.setItem('token', res.data.token);
+      console.log(res.data.token);
+      navigate('/home');
+   
     setEmail('');
     setPassword('');
   }
-
+  }
   return (
     <div className='p-7 flex flex-col  justify-between  h-screen'>
     <div>
@@ -34,7 +47,7 @@ const Userlogin = () => {
         type="email" placeholder='example@gmail.com' />
 
         <h3 className='text-2xl font-bold mb-2 '>Password</h3>
-        {/* <input className='bg-[#eeee] rounded border w-full px-4 py-2 text-lg placeholder:text-sm mb-7' required type="password" placeholder='password' /> */}
+       
          <div className='relative'>
           <input
             className='bg-[#eeee] rounded border w-full px-4 py-2 text-lg placeholder:text-sm mb-7'
